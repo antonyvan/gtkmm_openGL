@@ -1,6 +1,6 @@
 #pragma once
 #include <gtkmm.h>
-#include <glad/glad.h>
+#include <glad/glad.h>  # attention here, gtkmm use glfw+ glad doesn't work, use glfw + glew instead. see files in gtkmm_openGL
 #include <GLFW/glfw3.h>
 
 enum
