@@ -1,0 +1,48 @@
+install glade.
+sudo apt-get install glade
+
+create a xxx.glade file
+
+in your gtkmm widnow
+class mainwindow : public Gtk::Window
+{
+
+  Glib::RefPtr<Gtk::Builder> builder_;
+  public:
+  mainwindow(BaseObjectType *, Glib::RefPtr<Gtk::Builder> &);  must use this one to accept builder 
+ };
+ 
+ in your main funciton , the basic setup is given as follows 
+ int main( int argc, char * argv[] ) {
+	  auto app = Gtk::Application::create( argc, argv, "gtkmm.tutorial.example6" ); // *** leaks
+		auto builder = Gtk::Builder::create_from_file( "kinect2.glade" );
+		mainwindow *window_ = nullptr;
+
+		// Builds MyWindow, derived from Gtk::Window. Automatically gets the
+		// BaseObjectType and Builder reference passed in.
+		builder->get_widget_derived( "window", window_);
+		if ( window_ == nullptr ) {
+		  g_warning("unable to extract window"); 
+		  return -1;
+		} // if
+		app->run( *window_ );
+   } 
+ 
+ 
+https://www.gtkmm.org/en/books.html
+http://lira.epac.to:8080/doc/gtkmm-documentation/tutorial/html/
+so far only using derived widget works 
+http://lira.epac.to:8080/doc/gtkmm-documentation/tutorial/html/sec-builder-using-derived-widgets.html
+Use Gtk::Builder::get_widget_derived() like so:
+
+DerivedDialog* pDialog = nullptr;
+builder->get_widget_derived("DialogBasic", pDialog);
+
+Your derived class must have a constructor that takes a pointer to the underlying C type, and the Gtk::Builder instance. 
+All relevant classes of gtkmm typedef their underlying C type as BaseObjectType (Gtk::Dialog typedefs BaseObjectType as GtkDialog, for instance).
+You must call the base class's constructor in the initialization list, providing the C pointer. For instance, 
+DerivedDialog::DerivedDialog(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+: Gtk::Dialog(cobject)
+{
+}
+
